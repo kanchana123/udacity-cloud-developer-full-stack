@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+const fs = require('fs');
 
 (async () => {
 
@@ -30,6 +31,38 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
+
+  app.get("/filteredimage/", async ( req, res ) => {
+      try {
+        let { image_url } = req.query;
+
+        if ( !image_url ) {
+          return res.status(400)
+                    .send(`image_url is required`);
+        }
+
+        var filteredpath = await filterImageFromURL(image_url)
+
+        var img_path : string = __dirname+'/util/tmp/'
+        let image_files : Array<string> = []
+
+        await fs.readdirSync(img_path).forEach((file : any) => {
+          console.log(file);
+          image_files.push(img_path+file)
+        });
+        
+        return res.status(200).sendFile(filteredpath, (err) => {
+          if (!err) {
+            deleteLocalFiles(image_files);
+          }
+        });
+      } catch (error) {
+        console.log(error)
+        return res.status(400)
+          .send(`Something went wrong.`);
+      }
+
+    })
   
   // Root Endpoint
   // Displays a simple message to the user
