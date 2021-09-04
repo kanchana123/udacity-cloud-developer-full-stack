@@ -1,5 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { Request, Response } from 'express';
+
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 const fs = require('fs');
 
@@ -32,7 +34,7 @@ const fs = require('fs');
 
   //! END @TODO1
 
-  app.get("/filteredimage/", async ( req, res ) => {
+  app.get("/filteredimage/", async ( req: Request, res: Response ) => {
       try {
         let { image_url } = req.query;
 
@@ -66,7 +68,7 @@ const fs = require('fs');
   
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
+  app.get( "/", async ( req: Request, res: Response ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
   
